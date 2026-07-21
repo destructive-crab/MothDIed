@@ -1,7 +1,6 @@
 using System;
-using Zenject;
 
-public abstract class Event : ITickable
+public abstract class Event 
 {
     public event Action<Event> OnEventCompleted;
     public bool Completed { get; private set; } = false;

@@ -12,30 +12,22 @@ using UnityEngine;
 
 namespace MothDIed.DI
 {
-    [HelpURL("https://github.com/RimuruDev/IndieInject")]
-    public class MonoSingleton<TComponent> : MonoBehaviour where TComponent : Component
+    public class MonoSingleton<TComponent> 
+        where TComponent : Component
     {
         protected static TComponent instance;
 
         public static bool HasInstance => instance != null;
 
-        public static TComponent TryGetInstance() => HasInstance ? instance : null;
-
-        public static TComponent Current => instance;
-
-        public static TComponent Self => instance;
-
         public static TComponent Instance
         {
             get
             {
-                if (instance != null)
-                    return instance;
+                if (instance != null) return instance;
 
-                instance = FindFirstObjectByType<TComponent>();
+                instance = GameObject.FindFirstObjectByType<TComponent>();
 
-                if (instance != null)
-                    return instance;
+                if (instance != null) return instance;
 
                 var obj = new GameObject
                 {
@@ -46,17 +38,6 @@ namespace MothDIed.DI
 
                 return instance;
             }
-        }
-
-        protected virtual void Awake() =>
-            InitializeSingleton();
-
-        protected virtual void InitializeSingleton()
-        {
-            if (!Application.isPlaying)
-                return;
-
-            instance = this as TComponent;
         }
     }
 }

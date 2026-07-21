@@ -16,12 +16,12 @@ namespace MothDIed.GUI
             this.findStartLayerOnStart = findStartLayerOnStart;
         }
 
-        public override void StartModule(Scene scene)
+        public override void PrepareModule(Scene scene)
         {
             if(!findStartLayerOnStart) return;
             
-            var layers = GameObject.FindObjectsOfType<GUILayer>();
-            var startLayer = GameObject.FindObjectOfType<StartLayer>();
+            var layers = GameObject.FindObjectsByType<GUILayer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var startLayer = GameObject.FindAnyObjectByType<StartLayer>(FindObjectsInactive.Include);
                 
             foreach (var layer in layers)
             {

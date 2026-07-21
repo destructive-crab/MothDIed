@@ -1,6 +1,6 @@
 using System;
 
-namespace autumn_berries_mix.CallbackSystem.Signals
+namespace MothDIed.CallbackSystem.Signals
 {
     public sealed class SignalSubscription
     {

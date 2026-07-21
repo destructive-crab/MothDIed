@@ -9,31 +9,27 @@ namespace MothDIed.Scenes
         public SceneModulesManager Modules { get; private set; } 
         
         public abstract string GetSceneName();
-        
-        public virtual Camera GetCamera()
-            => Camera.current;
+        public virtual Camera GetCamera() => Camera.current;
 
         public void InitModules()
         {
             Modules = new SceneModulesManager(this);
-
             SetupModules();
+            Fabric.RefreshModules();
         }
 
         protected virtual void SetupModules() { }
-
         public virtual void PrepareScene() { }
 
         public void LoadScene()
         {
-            Modules.StartAllModules();
+            Modules.PrepareAllModules();
             OnSceneLoaded();
+            Modules.StartAllModules();
         }
 
         protected virtual void OnSceneLoaded() { }
-
         public virtual void DisposeScene() { }
-
         public virtual void UpdateScene() { }
     }    
 }   

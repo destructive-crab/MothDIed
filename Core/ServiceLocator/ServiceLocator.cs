@@ -1,24 +1,39 @@
 using System;
 using System.Collections.Generic;
+using MothDIed.Debug;
 
 namespace MothDIed.ServiceLocators
 {
-    public class ServiceLocator<TServiceBase>
+    public class ServiceLocator<TServiceBase> : IServiceLocator
         where TServiceBase : class
     {
         private readonly Dictionary<Type, TServiceBase> services = new ();
         private readonly List<TServiceBase> servicesList = new ();
+        public int Count => servicesList.Count;
 
         public TServiceBase[] GetAll() => servicesList.ToArray();
         
-        public bool Contains<TService>() where TService : TServiceBase => services.ContainsKey(typeof(TService));
+        public bool Contains<TService>() where TService : class
+            => Contains(typeof(TService));
         
         public TService Get<TService>() where TService : class, TServiceBase
         {
-            if (!services.ContainsKey(typeof(TService)))
-                throw new Exception($"No service of type {typeof(TService)}");
-            
-            return services[typeof(TService)] as TService;
+            return GetBlind(typeof(TService)) as TService;
+        }
+
+        public bool Contains(Type serviceType)
+        {
+            return services.ContainsKey(serviceType);
+        }
+
+        public object GetBlind(Type extensionType)
+        {
+            if (!services.ContainsKey(extensionType))
+            {
+                return null;
+            }
+
+            return services[extensionType];
         }
 
         public T[] GetAllOfType<T>() 
@@ -46,11 +61,19 @@ namespace MothDIed.ServiceLocators
             return serviceEnquire != null;
         }
 
-        public ServiceLocator<TServiceBase>Register<TService>(TService service)
+        public ServiceLocator<TServiceBase> Register<TService>(TService service)
             where TService : TServiceBase
         {
-            if(services.TryAdd(service.GetType(), service))
+            if (services == null)
+            {
+                LogHistory.PushAsError($"[SERVICE LOCATOR : REGISTER] TRYING TO REGISTER SERVICE {typeof(TService)} BUT INSTANCE IS NULL");
+                return this;
+            }
+
+            if(services.TryAdd(typeof(TService), service))
+            {
                 servicesList.Add(service);
+            }
 
             return this;
         }

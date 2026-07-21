@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using autumn_berries_mix.Scenes;
+using MothDIed.Scenes;
 
-namespace autumn_berries_mix.CallbackSystem.Signals
+namespace MothDIed.CallbackSystem.Signals
 {
     public static class SignalManager
     {
-        private static readonly Dictionary<Type, List<KeyValuePair<SignalSubscription, SignalSubscriber>>> 
-            Subscriptions = new();
+        private static readonly Dictionary<Type, List<KeyValuePair<SignalSubscription, SignalSubscriber>>> Subscriptions = new();
 
         static SignalManager()
         {
-            SceneSwitcher.OnSceneStartedLoading += ClearSubscriptions;
+            Game.G<SceneSwitcher>().OnSwitchingFromCurrent += ClearSubscriptions;
         }
 
         private static void ClearSubscriptions(Scene arg1)
@@ -50,9 +49,9 @@ namespace autumn_berries_mix.CallbackSystem.Signals
         public static SignalSubscription SubscribeOnSignal<TSignal>(Action<TSignal> action, bool clearOnLoad = true)
             where TSignal : Signal
         {
-            var signalType = typeof(TSignal);
-            var subscriber = new TypedSignalSubscriber<TSignal>(action);
-            var subscription = new SignalSubscription(subscriber, clearOnLoad);
+            Type signalType = typeof(TSignal);
+            SignalSubscriber subscriber = new TypedSignalSubscriber<TSignal>(action);
+            SignalSubscription subscription = new SignalSubscription(subscriber, clearOnLoad);
 
             if (Subscriptions.TryAdd(signalType, new List<KeyValuePair<SignalSubscription, SignalSubscriber>>() { new (subscription, subscriber) }))
                 return subscription;

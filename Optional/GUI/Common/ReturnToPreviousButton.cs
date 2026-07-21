@@ -1,5 +1,4 @@
 using System;
-using MothDIed.Scenes;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +13,7 @@ namespace MothDIed.GUI
         {
             GetComponent<Button>().onClick.AddListener(ReturnToPrevious);
 
-            if (Game.CurrentScene.Modules.TryGetModule(out SceneGUIModule sceneGUI))
+            if (Game.G<SceneSwitcher>().CurrentScene.Modules.TryGetModule(out SceneGUIModule sceneGUI))
             {
                 this.sceneGUIModule = sceneGUI;
             }
